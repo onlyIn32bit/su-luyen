@@ -8,13 +8,12 @@ import {
   arrayUnion,
   arrayRemove,
 } from "firebase/firestore";
+import { z } from "zod";
 
 const db = useFirestore();
-const user = useCurrentUser();
+const user = useCurrentUser()!;
 
 const { post } = defineProps(["post"]);
-
-const commentField = ref<string>("");
 
 const postLiked = ref<boolean>(false);
 watchEffect(() => {
@@ -42,17 +41,21 @@ async function reactPost() {
   }
 }
 
-const commentContent = ref<string>("");
 
-async function createComment() {
+const commentSchema = z.object({
+  content: z.string().max(512).optional(),
+});
+
+const onSubmit = async (values: Record<string, any>) => {
   await updateDoc(doc(db, "posts", post.id), {
     comments: arrayUnion({
-      content: commentContent.value,
+      user_id: user.value?.uid,
+      content: values.content,
       created_at: new Date(),
-      
+      replies: [],
     }),
   });
-}
+};
 </script>
 
 <template>
@@ -121,12 +124,12 @@ async function createComment() {
             Bình luận
           </Button>
         </DialogTrigger>
-        <DialogContent class="h-[75vh] flex flex-col">
+        <DialogContent class="min-h-[40vh] flex flex-col">
           <DialogHeader>
             <DialogTitle>Bình Luận</DialogTitle>
             <DialogDescription> </DialogDescription>
           </DialogHeader>
-          <div v-if="post.comments.length > 0">
+          <div class="max-h-[75vh] overflow-y-scroll" v-if="post.comments.length > 0">
             <PostComment
               v-for="(comment, index) in post.comments"
               :comment="comment"
@@ -139,10 +142,30 @@ async function createComment() {
           >
             Hãy là người đầu tiên bình luận!
           </p>
-          <div class="flex w-full mt-auto items-center gap-1.5">
-            <Input placeholder="Nhập bình luận" />
-            <Button>Đăng bình luận</Button>
-          </div>
+          <AutoForm
+            class="mt-auto"
+            :schema="commentSchema"
+            :field-config="{
+              content: {
+                hideLabel: true,
+                inputProps: {
+                  placeholder: 'Nhập bình luận',
+                },
+              },
+            }"
+            @submit="onSubmit"
+          >
+            <template #content="slotProps">
+              <div class="flex items-center gap-3">
+                <div class="flex-1">
+                  <AutoFormField v-bind="slotProps" />
+                </div>
+                <div>
+                  <Button type="submit"> Gửi </Button>
+                </div>
+              </div>
+            </template>
+          </AutoForm>
         </DialogContent>
       </Dialog>
       <Button variant="ghost">

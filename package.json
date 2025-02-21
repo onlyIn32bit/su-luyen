@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@firebase/app-types": "^0.9.3",
+    "@nuxt/content": "^3.2.0",
     "@nuxtjs/color-mode": "^3.5.2",
     "@nuxtjs/tailwindcss": "^6.13.1",
     "@vee-validate/zod": "^4.15.0",

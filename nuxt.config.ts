@@ -2,7 +2,7 @@
 export default defineNuxtConfig({
   compatibilityDate: '2024-11-01',
   devtools: { enabled: true },
-  modules: ['@nuxtjs/tailwindcss', 'nuxt-vuefire', 'shadcn-nuxt'],
+  modules: ['@nuxtjs/tailwindcss', 'nuxt-vuefire', 'shadcn-nuxt', "@nuxt/content"],
   future: {
     typescriptBundlerResolution: false,
   },

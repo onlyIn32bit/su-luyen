@@ -49,6 +49,8 @@ const created_at = new Date(comment.created_at.seconds * 1000).toLocaleString();
 
           {{ comment.likes ?? 0 }}
         </Button>
+        <Button variant="ghost">Tra loi</Button>
+        <Button variant="ghost"></Button>
       </CardFooter>
     </Card>
   </div>
