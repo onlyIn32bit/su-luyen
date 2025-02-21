@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useFirestore, useCollection } from "vuefire";
-import { addDoc, collection, orderBy } from "firebase/firestore";
+import { addDoc, collection, orderBy, query } from "firebase/firestore";
 import { z } from "zod";
 import { useForm } from "vee-validate";
 import { toTypedSchema } from "@vee-validate/zod";
@@ -8,7 +8,7 @@ import { toTypedSchema } from "@vee-validate/zod";
 const db = useFirestore();
 const user = useCurrentUser();
 
-const posts = useCollection(collection(db, "posts"));
+const posts = useCollection(query(collection(db, "posts"), orderBy("created_at", "desc")));
 const isLoading = ref(false);
 
 const createPostSchema = z.object({

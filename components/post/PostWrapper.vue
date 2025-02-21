@@ -14,7 +14,7 @@ const user = useCurrentUser();
 
 const { post } = defineProps(["post"]);
 
-const commentField = ref<string>('');
+const commentField = ref<string>("");
 
 const postLiked = ref<boolean>(false);
 watchEffect(() => {
@@ -42,9 +42,15 @@ async function reactPost() {
   }
 }
 
+const commentContent = ref<string>("");
+
 async function createComment() {
   await updateDoc(doc(db, "posts", post.id), {
-    comments: arrayUnion({}),
+    comments: arrayUnion({
+      content: commentContent.value,
+      created_at: new Date(),
+      
+    }),
   });
 }
 </script>
@@ -122,14 +128,19 @@ async function createComment() {
           </DialogHeader>
           <div v-if="post.comments.length > 0">
             <PostComment
-            v-for="(comment, index) in post.comments"
-            :comment="comment"
-            :key="index"
+              v-for="(comment, index) in post.comments"
+              :comment="comment"
+              :key="index"
             />
           </div>
-          <p v-else class="text-center text-gray-500">Hãy là người đầu tiên bình luận!</p>
-           <div class="flex w-full mt-auto items-center gap-1.5">
-            <Input placeholder="Nhập bình luận"/>
+          <p
+            v-else
+            class="text-center text-gray-500"
+          >
+            Hãy là người đầu tiên bình luận!
+          </p>
+          <div class="flex w-full mt-auto items-center gap-1.5">
+            <Input placeholder="Nhập bình luận" />
             <Button>Đăng bình luận</Button>
           </div>
         </DialogContent>

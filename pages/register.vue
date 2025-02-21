@@ -68,7 +68,7 @@ const onSubmit = async (values: Record<string, any>) => {
 </script>
 
 <template>
-  <Card>
+  <Card class="mx-auto max-w-sm mt-10 shadow-md">
     <CardHeader>
       <CardTitle class="text-2xl"> Đăng ký </CardTitle>
       <CardDescription> Nhập thông tin để tạo tài khoản </CardDescription>
