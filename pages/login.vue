@@ -15,8 +15,8 @@ const db = useFirestore()
 const auth = useFirebaseAuth()!;
 
 const formSchema = z.object({
-  username: z.string(),
-  // email: z.string().email(),
+  // username: z.string(),
+  email: z.string().email(),
   password: z.string()
 })
 
@@ -50,13 +50,6 @@ const onSubmit = async (values: Record<string, any>) => {
         :schema="formSchema"
         :form="form"
         :field-config="{
-          username: {
-            label: 'Tên người dùng',
-            inputProps: {
-              placeholder: 'example',
-              autocomplete: 'username'
-            },
-          },
           email: {
             label: 'Email',
             inputProps: {
@@ -79,7 +72,6 @@ const onSubmit = async (values: Record<string, any>) => {
         <Button
           class="w-full mt-4"
           type="submit"
-          :disabled="loading"
           >Đăng nhập</Button
         >
       </AutoForm>
