@@ -51,12 +51,9 @@ const form = useForm({
 
 const onSubmit = async (values: Record<string, any>) => {
   createUserWithEmailAndPassword(auth, values.email, values.password)
-    .then(async () => {
-      await setDoc(doc(db, "users"), {
-        username: values.username,
-        grade: 0,
-        role: "Student",
-        studied: [],
+    .then(async (credential) => {
+      await setDoc(doc(db, "users", credential.user.uid), {
+        username: values.username
       });
       console.log("Registered");
       alert("Đã đăng kí");

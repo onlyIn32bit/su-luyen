@@ -1,19 +1,43 @@
 <script setup lang="ts">
 import { useFirestore, useCollection } from "vuefire";
-import { addDoc, collection } from "firebase/firestore";
+import { addDoc, collection, orderBy } from "firebase/firestore";
+import { z } from "zod";
+import { useForm } from "vee-validate";
+import { toTypedSchema } from "@vee-validate/zod";
+
 const db = useFirestore();
+const user = useCurrentUser();
 
 const posts = useCollection(collection(db, "posts"));
-const postContent = ref("");
 const isLoading = ref(false);
 
-async function createPost() {
+const createPostSchema = z.object({
+  header: z
+    .string({ required_error: "Hãy nhập tiêu đề" })
+    .min(3, { message: "Tiêu đề cần tối thiểu 3 kí tự" })
+    .max(64, { message: "Tiêu đề tối đa 64 kí tự!" }),
+  content: z
+    .string({ required_error: "Hãy nhập nội dung bài viết" })
+    .max(1024, { message: "Nội dung tối đa 1024 kí tự!" }),
+});
+
+const createPostForm = useForm({
+  validationSchema: toTypedSchema(createPostSchema),
+});
+
+const onSubmitPost = async (values: Record<string, any>) => {
   try {
-    const docRef = await addDoc(collection(db, "messages"), {
-      content: postContent.value,
-      time: new Date(),
+    const docRef = await addDoc(collection(db, "posts"), {
+      from: user.value?.uid,
+      header: values.header,
+      content: values.content.replace(/\n/g, "#NEWLINE"),
+      comments: [],
+      created_at: new Date(),
+      updated_at: new Date(),
+      deleted: false,
+      likes: 0,
+      liked_users: []
     });
-    postContent.value = "";
     console.log("sent", docRef.id);
   } catch (error) {
     console.error("Error sending message:", error);
@@ -21,7 +45,7 @@ async function createPost() {
   } finally {
     isLoading.value = false;
   }
-}
+};
 </script>
 
 <template>
@@ -38,27 +62,25 @@ async function createPost() {
               Bạn muốn chia sẻ điều gì đó với mọi người?
             </DialogDescription>
           </DialogHeader>
-          <div class="grid gap-4 py-4">
-            <div class="grid w-full gap-1.5">
-              <Label for="header">Tiêu đề bài viết</Label>
-              <Input
-                id="header"
-                class="col-span-3"
-                placeholder="Nhập tiêu đề bài viết"
-              />
-            </div>
-            <div class="grid w-full gap-1.5">
-              <Label for="message">Nội dung bài viết</Label>
-              <Textarea
-                class="min-h-44"
-                id="message"
-                placeholder="Bạn đang có suy nghĩ gì?"
-              />
-            </div>
-          </div>
-          <DialogFooter>
+          <AutoForm
+            :schema="createPostSchema"
+            :form="createPostForm"
+            :field-config="{
+              header: {
+                label: 'Tiêu đề bài viết',
+                inputProps: {
+                  placeholder: 'Nhập tiêu đề',
+                },
+              },
+              content: {
+                component: 'textarea',
+                description: 'Tuân thủ quy tắc cộng đồng!',
+              },
+            }"
+            @submit="onSubmitPost"
+          >
             <Button type="submit"> Đăng </Button>
-          </DialogFooter>
+          </AutoForm>
         </DialogContent>
       </Dialog>
     </div>

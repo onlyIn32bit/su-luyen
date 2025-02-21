@@ -1,9 +1,3 @@
-<script setup lang="ts">
-useHead({
-  titleTemplate: "Sử Luyện - Học lịch sử theo cách độc đáo",
-});
-</script>
-
 <template>
   <div class="container mx-auto p-4">
     <h1 class="text-4xl font-bold mb-4">Trang Chủ</h1>
@@ -27,8 +21,8 @@ useHead({
     <section>
       <h2 class="text-2xl font-semibold mb-2">Bắt Đầu</h2>
       <p class="mb-4">Để bắt đầu hành trình của bạn qua lịch sử, hãy đăng ký tài khoản và khám phá các tài nguyên của chúng tôi. Dù bạn là học sinh, giáo viên hay người đam mê lịch sử, Sử Luyện đều có điều gì đó dành cho bạn.</p>
-      <button class="bg-blue-500 text-white px-4 py-2 rounded mr-2">Đăng Ký</button>
-      <button class="bg-gray-500 text-white px-4 py-2 rounded">Tìm Hiểu Thêm</button>
+      <Button>Đăng Ký</Button>
+      <Button variant="outline">Tìm Hiểu Thêm</Button>
     </section>
   </div>
 </template>

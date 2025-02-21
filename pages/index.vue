@@ -1,6 +1,8 @@
 <script setup lang="ts">
+useHead({
+  titleTemplate: "Sử Luyện",
+});
 definePageMeta({
-  title: "Sử Luyện",
   layout: false,
 });
 const user = useCurrentUser();
